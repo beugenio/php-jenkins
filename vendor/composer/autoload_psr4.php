@@ -6,8 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'app\\' => array($baseDir . '/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+    'App\\Tests\\' => array($baseDir . '/tests'),
+    'App\\' => array($baseDir . '/src'),
 );
