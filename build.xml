@@ -28,6 +28,13 @@
  <property name="phpmd"   value="${basedir}/vendor/bin/phpmd.bat"/>
  <property name="phpunit" value="${basedir}/vendor/bin/phpunit.bat"/>
 
+ <target name="php-check">
+    <condition property="php" value="php">
+      <not>
+        <isset property="${php}"/>
+      </not>
+    </condition>
+  </target>
 
  <target name="full-build"
          depends="composer,prepare,static-analysis,phpunit,phpdox,-check-failure"
@@ -46,12 +53,22 @@
          description="Performs static analysis" />
 
  <target name="composer"
-         description="Run composer update">
-          <exec executable="C:\ProgramData\ComposerSetup\bin\composer.bat">
-             <arg value="update"/>
+         description="Run composer update"
+         depends="php-check">
+          <!--<exec executable="C:\ProgramData\ComposerSetup\bin\composer.bat">-->
+          <exec executable="${php}">
+             <arg value="${basedir}/composer.phar"/>
+             <arg value="self-update"/>
            </exec>
          </target>
-
+<!--
+  <target name="composer"
+          description="Run composer update">
+          <exec executable="C:\ProgramData\ComposerSetup\bin\composer.bat">
+            <arg value="update"/>
+          </exec>
+  </target>
+ -->
  <!-- Adjust the threadCount attribute's value to the number of CPUs -->
  <target name="static-analysis-parallel"
          description="Performs static analysis (executing the tools in parallel)">
@@ -198,8 +215,8 @@
          unless="phpcs.done"
          depends="prepare"
          description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
-  <exec executable="${phpcs}" taskname="phpcs">
   <!--<exec executable="${phpcs}" output="${basedir}/tests" taskname="phpcs">-->
+  <exec executable="${phpcs}" taskname="phpcs">
    <arg value="--report=checkstyle" />
    <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
    <arg value="--standard=PSR2" />
